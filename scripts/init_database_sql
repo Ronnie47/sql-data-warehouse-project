@@ -1,0 +1,84 @@
+/*
+===============================================================================
+ Script Name : 01_create_datawarehouse.sql
+ Author      : Your Name
+ Created On  : 2025-12-17
+ Description :
+     This script creates the DataWarehouse database and initializes
+     the standard medallion architecture schemas:
+     - bronze : Raw ingested data
+     - silver : Cleaned and transformed data
+     - gold   : Analytics and reporting-ready data
+
+ Environment :
+     Microsoft SQL Server
+
+ Notes :
+     - Script is idempotent (safe to run multiple times)
+     - Execute with appropriate privileges
+===============================================================================
+*/
+
+-- =====================================================
+-- Create Database (if it does not already exist)
+-- =====================================================
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.databases 
+    WHERE name = 'DataWarehouse'
+)
+BEGIN
+    CREATE DATABASE DataWarehouse;
+    PRINT 'Database [DataWarehouse] created successfully.';
+END
+ELSE
+BEGIN
+    PRINT 'Database [DataWarehouse] already exists.';
+END
+GO
+
+-- =====================================================
+-- Switch to DataWarehouse database
+-- =====================================================
+USE DataWarehouse;
+GO
+
+-- =====================================================
+-- Create Schemas (Bronze, Silver, Gold)
+-- =====================================================
+
+-- Bronze Schema (Raw data)
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.schemas 
+    WHERE name = 'bronze'
+)
+BEGIN
+    EXEC('CREATE SCHEMA bronze');
+    PRINT 'Schema [bronze] created.';
+END
+GO
+
+-- Silver Schema (Cleaned & transformed data)
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.schemas 
+    WHERE name = 'silver'
+)
+BEGIN
+    EXEC('CREATE SCHEMA silver');
+    PRINT 'Schema [silver] created.';
+END
+GO
+
+-- Gold Schema (Business & analytics layer)
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.schemas 
+    WHERE name = 'gold'
+)
+BEGIN
+    EXEC('CREATE SCHEMA gold');
+    PRINT 'Schema [gold] created.';
+END
+GO
